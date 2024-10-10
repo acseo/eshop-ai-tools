@@ -5,6 +5,7 @@ require __DIR__.'/../vendor/autoload.php';
 
 use ACSEO\EshopAiTools\Service\GenerateDescription;
 use ACSEO\EshopAiTools\Service\GenerateTags;
+use ACSEO\EshopAiTools\Service\PictureToProduct;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -233,7 +234,7 @@ $application
         return Command::SUCCESS;
     });
 
-    $application
+$application
     ->register('pictures-to-description')
     ->setDescription('Analyze one or more pictures to generate description of it')
     ->addArgument(
@@ -311,4 +312,78 @@ $application
         $table->render();
         return Command::SUCCESS;
     });
+
+$application
+    ->register('pictures-to-product')
+    ->setDescription('Analyze one or more pictures to generate a product information')
+    ->addArgument(
+        'pictures',
+        InputArgument::IS_ARRAY | InputArgument::REQUIRED,
+        'Pictures you want to analyze in order to generate tags'
+    )
+    ->addOption(
+        'baseUri',
+        'uri',
+        InputOption::VALUE_OPTIONAL,
+        'LLM API Endpoint (eg: "openai.example.com/v1")',
+        'api.openai.com/v1'
+    )
+    ->addOption(
+        'apiKey',
+        'key',
+        InputOption::VALUE_REQUIRED,
+        'LLM API KEY (eg: "sk-xxx")',
+        false
+    )
+    ->addOption(
+        'locale',
+        'lang',
+        InputOption::VALUE_OPTIONAL,
+        'Lang to use',
+        'en_US'
+    )
+    ->setCode(function (InputInterface $input, OutputInterface $output): int {
+        
+        $apiKey = $input->getOption('apiKey');
+        if (!$apiKey) {
+            $output->writeln('<fg=yellow>You must provide an apiKey (--apiKey=xxx)</>');
+            return Command::INVALID;
+        }
+        $client = OpenAI::factory()
+            ->withApiKey($apiKey)
+            ->withBaseUri($input->getOption('baseUri'))
+            ->make();
+
+
+        $pictures = $input->getArgument('pictures');
+        $lang = $input->getOption('locale');
+
+        $pictureToProduct = new PictureToProduct($client);
+        $description = $pictureToProduct->fromPictures($pictures, $lang);
+
+        $desc = $description['content'];
+        $rows = [];
+        foreach($desc as $row) {
+            $rows[] = [
+                $row['title'],
+                $row['brand'],
+                $row['type'],
+                $row['keywords'],
+                $row['quantity'],
+            ];
+        }
+        $table = new Table($output);
+        $table
+        ->setHeaders([
+            str_pad('title', 20),
+            str_pad('brand', 20),
+            str_pad('type', 20),
+            str_pad('keywords', 20),
+            str_pad('quantity', 20),
+        ])
+        ->setRows($rows);
+        $table->render();
+        return Command::SUCCESS;
+    });
+
 $application->run();

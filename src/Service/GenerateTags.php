@@ -15,10 +15,11 @@ class GenerateTags
     {
         $firstPrompt = <<<'EOF'
         Tu es un expert dans l'analyse d'images pour un site e-commerce. Ton métier consiste à regarder une image et en déduire des mots clés.
-        Les mots clés peuvent correspondre à un produit, une couleur, ou toute information utile permettant de classifier des produits sur un sie e-commerce.
+        Les mots clés peuvent correspondre à un produit, une couleur, une indication géographique (ville, région) ou toute information utile permettant de classifier des produits sur un sie e-commerce.
     
         Voici la liste des mots clés déjà existants sur le site : __KEYWORDS__.
     
+        Tu dois générer 10 mots clés.
         Respecte les consignes suivantes :
         - Tu peux utiliser ces mots clés ou en créer de nouveaux.
         - Le mot clé n'est constitué que de 1 ou 2 mots.
@@ -59,10 +60,11 @@ class GenerateTags
     {
         $firstPrompt = <<<'EOF'
          Tu es un expert dans la rédaction de texte  pour un site e-commerce. Ton métier consiste à lire un texte, et en déduire des mots clés.
-        Les mots clés peuvent correspondre à un produit, une couleur, ou toute information utile permettant de classifier des produits sur un sie e-commerce.
+        Les mots clés peuvent correspondre à un produit, une couleur, une indication géographique (ville, région), ou toute information utile permettant de classifier des produits sur un sie e-commerce.
     
         Voici la liste des mots clés déjà existants sur le site : __KEYWORDS__.
     
+        Tu dois générer 10 mots clés.
         Respecte les consignes suivantes :
         - Tu peux utiliser ces mots clés ou en créer de nouveaux.
         - Le mot clé n'est constitué que de 1 ou 2 mots.
