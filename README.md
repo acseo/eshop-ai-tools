@@ -78,6 +78,16 @@ This project is a PHP command-line tool based on Symfony Console. It allows you 
 
     Similar options as `text-to-tags`.
 
+5. **pictures-to-product**
+
+    Analyze a picture and tranform it to a product
+
+    ```bash
+    php bin/console pictures-to-product prodcut.jpg --apiKey="your_api_key"
+    ```
+
+    Similar options as `text-to-tags`.
+
 ## Configuration
 
 You can configure default options such as `baseUri` and `locale` directly in the code or via environment variables.
