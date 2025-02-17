@@ -20,7 +20,7 @@ This project is a PHP command-line tool based on Symfony Console. It allows you 
 1. Clone the project repository:
 
     ```bash
-    git clone https://your-repo.git
+    git clone https://github.com/acseo/eshop-ai-tools
     cd eshop-ai-tools
     ```
 
