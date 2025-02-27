@@ -39,7 +39,7 @@ This project is a PHP command-line tool based on Symfony Console. It allows you 
     Analyze a text to generate tags.
 
     ```bash
-    php bin/console text-to-tags "Your text here" --apiKey="your_api_key"
+    php bin/eshop-ai-tools text-to-tags "Your text here" --apiKey="your_api_key"
     ```
 
     Options:
@@ -53,7 +53,7 @@ This project is a PHP command-line tool based on Symfony Console. It allows you 
     Analyze one or more pictures to generate tags.
 
     ```bash
-    php bin/console pictures-to-tags image1.jpg image2.png --apiKey="your_api_key"
+    php bin/eshop-ai-tools pictures-to-tags image1.jpg image2.png --apiKey="your_api_key"
     ```
 
     Similar options as `text-to-tags`.
@@ -63,7 +63,7 @@ This project is a PHP command-line tool based on Symfony Console. It allows you 
     Analyze a text to generate a complete description.
 
     ```bash
-    php bin/console text-to-description "Your text here" --apiKey="your_api_key"
+    php bin/eshop-ai-tools text-to-description "Your text here" --apiKey="your_api_key"
     ```
 
     Similar options as `text-to-tags`.
@@ -73,7 +73,7 @@ This project is a PHP command-line tool based on Symfony Console. It allows you 
     Analyze one or more pictures to generate a complete description.
 
     ```bash
-    php bin/console pictures-to-description image1.jpg image2.png --apiKey="your_api_key"
+    php bin/eshop-ai-tools pictures-to-description image1.jpg image2.png --apiKey="your_api_key"
     ```
 
     Similar options as `text-to-tags`.
@@ -83,7 +83,7 @@ This project is a PHP command-line tool based on Symfony Console. It allows you 
     Analyze a picture and tranform it to a product
 
     ```bash
-    php bin/console pictures-to-product prodcut.jpg --apiKey="your_api_key"
+    php bin/eshop-ai-tools pictures-to-product product.jpg --apiKey="your_api_key"
     ```
 
     Similar options as `text-to-tags`.
