@@ -12,28 +12,30 @@ class PictureToProduct
 
     public function fromPictures(array $pictures, string $locale = 'en_US')
     {
-
-        $firstPrompt = <<<'EOF'
+        $systemPrompt = <<<'EOF'
+        # Identity
+        
         Tu es un expert dans l'analyse d'images pour un site e-commerce. Ton métier consiste à regarder une image et générer le nom de un ou plusieurs produits.
         La photo contient soit des visuels de produits, soit une liste texte de produits.
-        Détermine également la quantité.
-        Le nom des produits doit être généré en lien avec l'image, par exemple par rapport aux mots que tu trouves sur celle-ci.
+        
+        # Instructions
 
-        Respecte les consignes suivantes :
-        - Texte en lien avec l'image.
-        - Génère tous les noms des produits que tu identifies sur l'image
-        - Le texte généré est dans la langue : __LOCALE__.
+        * Détermine la quantité des produits.
+        * Le nom des produits doit être généré en lien avec l'image, par exemple par rapport aux mots que tu trouves sur celle-ci.
+        * Texte en lien avec l'image.
+        * Génère tous les noms des produits que tu identifies sur l'image.
+        * Le texte généré est dans la langue : __LOCALE__.
         EOF;
 
-        $messages = [];
-
-        $prompt = str_replace(
+        $systemPrompt = str_replace(
             ['__LOCALE__', ],
             [$locale],
-            $firstPrompt
+            $systemPrompt
         );
 
-        $messages[] = ['role' => 'assistant', 'content' => $prompt];
+        $messages = [
+            ['role' => 'assistant', 'content' => $systemPrompt]
+        ];
         foreach($pictures as $picture) {
             $type = pathinfo($picture, PATHINFO_EXTENSION);
             $data = file_get_contents($picture);
