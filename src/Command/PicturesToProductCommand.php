@@ -29,8 +29,9 @@ class PicturesToProductCommand extends BaseCommand
 
         $pictures = $input->getArgument('pictures');
         $lang = $input->getOption('locale');
+        $model = $input->getOption('model');
 
-        $pictureToProduct = new PictureToProduct($client);
+        $pictureToProduct = new PictureToProduct($client, $model);
         $description = $pictureToProduct->fromPictures($pictures, $lang);
 
         $desc = $description['content'];

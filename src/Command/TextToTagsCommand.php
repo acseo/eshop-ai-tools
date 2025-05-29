@@ -35,8 +35,9 @@ class TextToTagsCommand extends BaseCommand
         $text = $input->getArgument('text');
         $lang = $input->getOption('locale');
         $existingTags = $input->getOption('existingTags');
+        $model = $input->getOption('model');
 
-        $generateTagsService = new GenerateTags($client);
+        $generateTagsService = new GenerateTags($client, $model);
         $tags = $generateTagsService->fromText($text, $lang, $existingTags);
 
         $data = array_map(function ($tag) {

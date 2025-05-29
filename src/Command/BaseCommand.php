@@ -41,6 +41,13 @@ abstract class BaseCommand extends Command
             'Lang to use',
             'en_US'
         );
+        $this->addOption(
+            'model',
+            null,
+            InputOption::VALUE_OPTIONAL,
+            'Model to use',
+            'gpt-4o-mini'
+        );
     }
 
     protected function getClient(InputInterface $input): Client

@@ -29,8 +29,9 @@ class PicturesToTagsCommand extends BaseCommand
         $pictures = $input->getArgument('pictures');
         $lang = $input->getOption('locale');
         $existingTags = $input->getOption('existingTags');
+        $model = $input->getOption('model');
 
-        $pictureToTag = new GenerateTags($client);
+        $pictureToTag = new GenerateTags($client, $model);
         $tags = $pictureToTag->fromPictures($pictures, $lang, $existingTags);
 
         $this->renderTable($input, $output, array_map(function ($tag) {

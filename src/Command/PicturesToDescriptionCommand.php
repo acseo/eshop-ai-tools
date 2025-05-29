@@ -30,8 +30,9 @@ class PicturesToDescriptionCommand extends BaseCommand
         $pictures = $input->getArgument('pictures');
         $lang = $input->getOption('locale');
         $existingTags = $input->getOption('existingTags');
+        $model = $input->getOption('model');
 
-        $picturesToDescription = new GenerateDescription($client);
+        $picturesToDescription = new GenerateDescription($client, $model);
         $description = $picturesToDescription->fromPictures($pictures, $lang, $existingTags);
         $desc = $description['content'][0];
 

@@ -30,8 +30,9 @@ class TextToDescriptionCommand extends BaseCommand
         $text = $input->getArgument('text');
         $lang = $input->getOption('locale');
         $existingTags = $input->getOption('existingTags');
+        $model = $input->getOption('model');
 
-        $textToDescription = new GenerateDescription($client);
+        $textToDescription = new GenerateDescription($client, $model);
         $description = $textToDescription->fromText($text, $lang, $existingTags);
         $desc = $description['content'][0];
 
