@@ -1,4 +1,5 @@
 <?php
+
 namespace ACSEO\EshopAiTools\Service;
 
 use OpenAI\Client;
@@ -93,7 +94,6 @@ class PictureToProduct
             ],
         ]);
 
-        $content = $result->choices[0]->message->content;
-        return json_decode($content, true);
+        return json_decode($result->choices[0]->message->content, true);
     }
 }

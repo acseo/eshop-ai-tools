@@ -1,11 +1,11 @@
 <?php
+
 namespace ACSEO\EshopAiTools\Service;
 
 use OpenAI\Client;
 
 class GenerateTags
 {
-
     public function __construct(private Client $client, private string $model = 'gpt-4o-mini')
     {
         
@@ -134,8 +134,6 @@ class GenerateTags
             ],
         ]);
 
-        $content = $result->choices[0]->message->content;
-        return json_decode($content, true);
-    }      
-
+        return json_decode($result->choices[0]->message->content, true);
+    }
 }
