@@ -78,7 +78,7 @@ class GenerateTags
         * Tu peux utiliser des mots clés déjà existants si proposé ou en créer de nouveaux.
         * Le mot clé n'est constitué que de 1 ou 2 mots.
         * Les mots clés sont en lien avec le texte.
-        * Les mots clés sont dans la langue : FR_fr
+        * Les mots clés sont dans la langue : __LOCALE__
         
         # Context
         
