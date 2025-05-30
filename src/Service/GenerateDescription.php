@@ -88,7 +88,7 @@ class GenerateDescription
             ['__LOCALE__', '__KEYWORDS__'],
             [
                 $locale,
-                [] !== $keywords ? sprintf('Voici la liste des mots clés déjà existants sur le site : %s.', implode(',', $keywords)) : '',
+                [] !== $keywords ? sprintf('Voici la liste des mots clés déjà existants sur le site : %s.', implode(',', $keywords)) : 'Aucun mot clé déjà existant.',
             ],
             $systemPrompt
         );
