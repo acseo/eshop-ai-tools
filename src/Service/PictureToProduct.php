@@ -35,7 +35,7 @@ class PictureToProduct
         );
 
         $messages = [
-            ['role' => 'assistant', 'content' => $systemPrompt]
+            ['role' => 'system', 'content' => $systemPrompt]
         ];
         foreach($pictures as $picture) {
             $type = pathinfo($picture, PATHINFO_EXTENSION);
