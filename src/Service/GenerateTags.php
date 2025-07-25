@@ -1,11 +1,11 @@
 <?php
+
 namespace ACSEO\EshopAiTools\Service;
 
 use OpenAI\Client;
 
 class GenerateTags
 {
-
     public function __construct(private Client $client, private string $model = 'gpt-4o-mini')
     {
         
@@ -13,28 +13,36 @@ class GenerateTags
 
     public function fromPictures(array $pictures, string $locale = 'en_US', array $keywords = [])
     {
-        $firstPrompt = <<<'EOF'
+        $systemPrompt = <<<'EOF'
+        # Identity
+        
         Tu es un expert dans l'analyse d'images pour un site e-commerce. Ton métier consiste à regarder une image et en déduire des mots clés.
         Les mots clés peuvent correspondre à un produit, une couleur, une indication géographique (ville, région) ou toute information utile permettant de classifier des produits sur un sie e-commerce.
     
-        Voici la liste des mots clés déjà existants sur le site : __KEYWORDS__.
-    
-        Tu dois générer 10 mots clés.
-        Respecte les consignes suivantes :
-        - Tu peux utiliser ces mots clés ou en créer de nouveaux.
-        - Le mot clé n'est constitué que de 1 ou 2 mots.
-        - Les mots clés sont dans la langue : __LOCALE__
+        # Instructions
+        
+        * Tu dois générer 10 mots clés.
+        * Tu peux utiliser des mots clés déjà existants si proposé ou en créer de nouveaux.
+        * Le mot clé n'est constitué que de 1 ou 2 mots.
+        * Les mots clés sont dans la langue : __LOCALE__
+        
+        # Context
+        
+        __KEYWORDS__
         EOF;
-        $messages = [];
 
-        $prompt = str_replace(
-            ['__KEYWORDS__', '__LOCALE__'],
-            [implode(', ',$keywords), $locale],
-            $firstPrompt
+        $systemPrompt = str_replace(
+            ['__LOCALE__', '__KEYWORDS__'],
+            [
+                $locale,
+                [] !== $keywords ? sprintf('Voici la liste des mots clés déjà existants sur le site : %s.', implode(',', $keywords)) : 'Aucun mot clé déjà existant.',
+            ],
+            $systemPrompt
         );
 
-        $messages[] = ['role' => 'assistant', 'content' => $prompt];
-
+        $messages = [
+            ['role' => 'system', 'content' => $systemPrompt]
+        ];
         foreach($pictures as $picture) {
             $type = pathinfo($picture, PATHINFO_EXTENSION);
             $data = file_get_contents($picture);
@@ -58,31 +66,38 @@ class GenerateTags
 
     public function fromText(string $text, string $locale = 'en_US', array $keywords = [])
     {
-        $firstPrompt = <<<'EOF'
-         Tu es un expert dans la rédaction de texte  pour un site e-commerce. Ton métier consiste à lire un texte, et en déduire des mots clés.
-        Les mots clés peuvent correspondre à un produit, une couleur, une indication géographique (ville, région), ou toute information utile permettant de classifier des produits sur un sie e-commerce.
-    
-        Voici la liste des mots clés déjà existants sur le site : __KEYWORDS__.
-    
-        Tu dois générer 10 mots clés.
-        Respecte les consignes suivantes :
-        - Tu peux utiliser ces mots clés ou en créer de nouveaux.
-        - Le mot clé n'est constitué que de 1 ou 2 mots.
-        - Les mots clés sont en lien avec le texte.
-        - Les mots clés sont dans la langue : __LOCALE__
-
-        Le texte est le suivant : __TEXT__
+        $systemPrompt = <<<'EOF'
+        # Identity
+        
+        Tu es un expert dans la rédaction de texte pour un site e-commerce. Ton métier consiste à lire un texte, et en déduire des mots clés.
+        Les mots clés peuvent correspondre à un produit, une couleur, une indication géographique (ville, région), ou toute information utile permettant de classifier des produits sur un site e-commerce.
+        
+        # Instructions
+        
+        * Tu dois générer 10 mots clés.
+        * Tu peux utiliser des mots clés déjà existants si proposé ou en créer de nouveaux.
+        * Le mot clé n'est constitué que de 1 ou 2 mots.
+        * Les mots clés sont en lien avec le texte.
+        * Les mots clés sont dans la langue : __LOCALE__
+        
+        # Context
+        
+        __KEYWORDS__
         EOF;
 
-        $messages = [];
-
-        $prompt = str_replace(
-            ['__LOCALE__', '__KEYWORDS__', '__TEXT__'],
-            [$locale, implode(',', $keywords), $text],
-            $firstPrompt
+        $systemPrompt = str_replace(
+            ['__LOCALE__', '__KEYWORDS__'],
+            [
+                $locale,
+                [] !== $keywords ? sprintf('Voici la liste des mots clés déjà existants sur le site : %s.', implode(', ', $keywords)) : 'Aucun mot clé déjà existant.',
+            ],
+            $systemPrompt
         );
 
-        $messages[] = ['role' => 'assistant', 'content' => $prompt];
+        $messages = [
+            ['role' => 'system', 'content' => $systemPrompt],
+            ['role' => 'user', 'content' => sprintf('Voici le texte : %s', $text)]
+        ];
 
         return $this->execute($messages);
     }
@@ -119,8 +134,6 @@ class GenerateTags
             ],
         ]);
 
-        $content = $result->choices[0]->message->content;
-        return json_decode($content, true);
-    }      
-
+        return json_decode($result->choices[0]->message->content, true);
+    }
 }

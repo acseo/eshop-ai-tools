@@ -45,7 +45,7 @@ This project is a PHP command-line tool based on Symfony Console. It allows you 
     Options:
     - `--baseUri`: Specify the LLM API endpoint (default is `api.openai.com/v1`).
     - `--apiKey`: API key for authentication.
-    - `--existingTags`: List of existing tags that can be used.
+    - `--existingTags`: List of existing tags that can be used (ex: `--existingTags="tag1" --existingTags="tag2"`).
     - `--locale`: Language to use (default is `en_US`).
     - `--model`: Model to use (default is `gpt-4o-mini`).
 

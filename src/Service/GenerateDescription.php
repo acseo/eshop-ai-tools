@@ -1,4 +1,5 @@
 <?php
+
 namespace ACSEO\EshopAiTools\Service;
 
 use OpenAI\Client;
@@ -12,29 +13,36 @@ class GenerateDescription
 
     public function fromPictures(array $pictures, string $locale = 'en_US', array $keywords = [])
     {
-
-        $firstPrompt = <<<'EOF'
+        $systemPrompt = <<<'EOF'
+        # Identity
+        
         Tu es un expert dans l'analyse d'images pour un site e-commerce. Ton métier consiste à regarder une image et générer un titre, une description courte, une description longue, la méta mot clé, et la meta description.
-
         Les contenus générés doivent être en lien avec l'image, et favoriser le SEO du site.
-
-        Voici la liste des mots clés déjà existants sur le site : __KEYWORDS__. 
-        Respecte les consignes suivantes :
-        - Tu peux utiliser ces mots clés ou en créer de nouveaux.
-        - Texte en lien avec l'image.
-        - Texte respectant les standards SEO, avec la bonne structure et nombre de caractères.
-        - Les mots clés sont dans la langue : __LOCALE__.
+         
+        # Instructions
+        
+        * Tu peux utiliser des mots clés déjà existants si proposé ou en créer de nouveaux.
+        * Texte en lien avec l'image.
+        * Texte respectant les standards SEO, avec la bonne structure et nombre de caractères.
+        * Les mots clés sont dans la langue : __LOCALE__.
+        
+        # Context
+        
+        __KEYWORDS__
         EOF;
 
-        $messages = [];
-
-        $prompt = str_replace(
+        $systemPrompt = str_replace(
             ['__LOCALE__', '__KEYWORDS__'],
-            [$locale, implode(',', $keywords)],
-            $firstPrompt
+            [
+                $locale,
+                [] !== $keywords ? sprintf('Voici la liste des mots clés déjà existants sur le site : %s.', implode(',', $keywords)) : 'Aucun mot clé déjà existant.',
+            ],
+            $systemPrompt
         );
 
-        $messages[] = ['role' => 'assistant', 'content' => $prompt];
+        $messages = [
+            ['role' => 'system', 'content' => $systemPrompt]
+        ];
         foreach($pictures as $picture) {
             $type = pathinfo($picture, PATHINFO_EXTENSION);
             $data = file_get_contents($picture);
@@ -58,34 +66,37 @@ class GenerateDescription
 
     public function fromText(string $text, string $locale = 'en_US', array $keywords = [])
     {
-
-        $firstPrompt = <<<'EOF'
-        Tu es un expert dans la rédaction de texte  pour un site e-commerce. Ton métier consiste à lire un texte, et générer un titre, une description courte, une description longue, la méta mot clé, et la meta description.
-
+        $systemPrompt = <<<'EOF'
+        # Identity
+        
+        Tu es un expert dans la rédaction de texte pour un site e-commerce. Ton métier consiste à lire un texte, et générer un titre, une description courte, une description longue, la méta mot clé, et la meta description.
         Les contenus générés doivent être en lien avec le texte, et favoriser le SEO du site.
-
-        Voici la liste des mots clés déjà existants sur le site : __KEYWORDS__.
-
-        Respecte les consignes suivantes :
-        - Tu peux utiliser ces mots clés ou en créer de nouveaux.
-        - Texte en lien avec le texte.
-        - Texte respectant les standards SEO, avec la bonne structure et nombre de caractères.
-        - Les mots clés sont dans la langue : __LOCALE__.
-
-        Le texte est le suivant : __TEXT__
+        
+        # Instructions
+        
+        * Tu peux utiliser ces mots clés ou en créer de nouveaux.
+        * Texte en lien avec le texte.
+        * Texte respectant les standards SEO, avec la bonne structure et nombre de caractères.
+        * Les mots clés sont dans la langue : __LOCALE__.
+        
+        # Context
+        
+        __KEYWORDS__
         EOF;
 
-        $messages = [];
-
-        $prompt = str_replace(
-            ['__LOCALE__', '__KEYWORDS__', '__TEXT__'],
-            [$locale, implode(',', $keywords), $text],
-            $firstPrompt
+        $systemPrompt = str_replace(
+            ['__LOCALE__', '__KEYWORDS__'],
+            [
+                $locale,
+                [] !== $keywords ? sprintf('Voici la liste des mots clés déjà existants sur le site : %s.', implode(',', $keywords)) : 'Aucun mot clé déjà existant.',
+            ],
+            $systemPrompt
         );
 
-        $messages[] = ['role' => 'assistant', 'content' => $prompt];
-        
-        return $this->execute($messages);
+        return $this->execute([
+            ['role' => 'system', 'content' => $systemPrompt],
+            ['role' => 'user', 'content' => sprintf('Voici le text à décrire: %s', $text)]
+        ]);
     }
     
     private function execute(array $messages)
@@ -124,7 +135,6 @@ class GenerateDescription
             ],
         ]);
 
-        $content = $result->choices[0]->message->content;
-        return json_decode($content, true);
+        return json_decode($result->choices[0]->message->content, true);
     }
 }
