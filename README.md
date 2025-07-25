@@ -13,7 +13,7 @@ This project is a PHP command-line tool based on Symfony Console. It allows you 
 
 - PHP 7.4 or higher
 - Composer
-- An account and API key for a large language model (LLM) service such as OpenAI.
+- An account and API key for a large language model (LLM) service such as OpenAI or Perplexity.
 
 ## Installation
 
@@ -47,6 +47,7 @@ This project is a PHP command-line tool based on Symfony Console. It allows you 
     - `--apiKey`: API key for authentication.
     - `--existingTags`: List of existing tags that can be used.
     - `--locale`: Language to use (default is `en_US`).
+    - `--model`: Model to use (default is `gpt-4o-mini`).
 
 2. **pictures-to-tags**
 
@@ -91,6 +92,11 @@ This project is a PHP command-line tool based on Symfony Console. It allows you 
 ## Configuration
 
 You can configure default options such as `baseUri` and `locale` directly in the code or via environment variables.
+
+## Current Limitation
+
+The Perplexity API only accepts plain text messages in the `content` field. Sending multimodal data (such as images, audio, or objects like `image_url`) is not supported at this time. Any attempt to send non-text content will result in an error such as “Message content was empty.”
+See the [official documentation for supported formats](https://docs.perplexity.ai/api-reference/chat-completions).
 
 ## Authors
 

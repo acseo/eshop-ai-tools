@@ -58,7 +58,7 @@ class PictureToProduct
     private function execute(array $messages)
     {
         $result = $this->client->chat()->create([
-            'model' => 'gpt-4o-mini',
+            'model' => $this->model,
             'messages' => $messages,
             'response_format' => [
                 'type' => 'json_schema',
